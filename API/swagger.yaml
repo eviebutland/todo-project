@@ -1,0 +1,242 @@
+swagger: "2.0"
+info:
+  description: "This is to do API."
+  version: "1.0.0"
+  title: "To do API"
+host: "todo.swagger.io"
+basePath: "/v1"
+tags:
+- name: "To do items"
+  description: "Your list of things to do"
+schemes:
+- "https"
+- "http"
+paths:
+  /:
+    get:
+      tags:
+      - "To do items"
+      summary: "Finds all to do items"
+      operationId: "findAll"
+      produces:
+      - "application/xml"
+      - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Item"
+        "400":
+          description: "Invalid status value"
+  /add:
+    post:
+      tags:
+      - "To do items"
+      summary: "Add a new to do item to list"
+      description: ""
+      operationId: "addItem"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "To do item that needs to be added to the database"
+        required: true
+        schema:
+          $ref: "#/definitions/Item"
+      responses:
+        "500": 
+          description: "Internal server error"
+        "400": 
+          description: "Bad input"
+        "405":
+          description: "Invalid input"
+  /update/{itemId}:         
+    put:
+      tags:
+      - "To do items"
+      summary: "Update an existing item"
+      description: ""
+      operationId: "updateItem"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Item object that needs to be added to the database"
+        required: true
+        schema:
+          $ref: "#/definitions/Item"
+      - name: "itemId"
+        in: "path"
+        description: "Item id to updte"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Pet not found"
+        "405":
+          description: "Validation exception"
+  /find/status/{status}:
+    get:
+      tags:
+      - "To do items"
+      summary: "Finds to do items by status"
+      operationId: "findByStatus"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "status"
+        in: "path"
+        description: "Status values that need to be considered for filter"
+        required: true
+        type: "string"
+        enum: 
+          - "completed"
+          - "not completed"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Item"
+        "400":
+          description: "Invalid status value"
+  /find/category:
+    get:
+      tags:
+      - "To do items"
+      summary: "Finds Items by category"
+      description: "Muliple categories can be provided with comma separated strings. Use         category1, category2, category3 for testing."
+      operationId: "findByCategory"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "category"
+        in: "query"
+        description: "Categories to filter by"
+        required: true
+        type: "array"
+        items:
+          type: "string"
+          enum: 
+            - "quick tasks"
+            - "tasks"
+            - "projects"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Item"
+        "400":
+          description: "Invalid tag value"
+  /find/group/{group}:      
+    get:
+      tags:
+      - "To do items"
+      summary: "Finds Items by category"
+      description: "Muliple categories can be provided with comma separated strings. Use         category1, category2, category3 for testing."
+      operationId: "findByGrou["
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "group"
+        in: "path"
+        description: "Group to filter by"
+        required: true
+        type: "string"
+        items:
+          type: "string"
+          enum: 
+            - "work"
+            - "personal"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Item"
+        "400":
+          description: "Invalid tag value"
+  /delete/{itemId}:
+    delete:
+      tags:
+      - "To do items"
+      summary: "Deletes an item"
+      description: ""
+      operationId: "deleteItem"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "itemId"
+        in: "path"
+        description: "Item id to delete"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Item not found"  
+definitions:
+  Item:
+    type: "object"
+    required:
+    - "description"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      description:
+        type: "string"
+        example: "Send email to Sarah"
+      group: 
+        type: "string"
+        example: "work"
+        enum: 
+          - "work"
+          - "personal"
+      category: 
+        type: "string"
+        example: "quick task"
+        enum: 
+          - "quick task"
+          - "task"
+          - "project"
+      estimatedTime:
+        type: "string"
+        example: "5 mins"
+      status:
+        type: "string"
+        description: "To do item status"
+        enum: 
+          - "completed"
+          - "not complete"
+    xml:
+      name: "Item"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
