@@ -3,14 +3,31 @@ const Router = express.Router
 const controller = new Router()
 const Item = require('../model/item.js')
 
-// controller.post('/', validatePOST(), async (req, res) => {
-//   createNewMentor(req, res)
-// })
-controller.get('/', async (req, res) => {
-	console.log(req)
+controller.post('/add', async (req, res) => {
   try {
-		let returnedMentors = await Item.find();
-		res.send(returnedMentors)
+    console.log(req.body)
+    res.send(req.body) // this doesn't seem to be showing in mongo atlas
+	} 
+	catch (err) {
+		res.status(500).json({
+			"message": `Unable to complete request. ${err}`
+		})
+	}
+})
+
+controller.get('/', async (req, res) => {
+
+  try {
+		let items = await Item.find();
+    if(items.length === 0) {
+			res.status(404).json({
+				"message": "No items found"
+			})
+		} else {
+			res.send(items)
+		}
+    console.log(items)
+
 	} 
 	catch (err) {
 		res.status(500).json({
